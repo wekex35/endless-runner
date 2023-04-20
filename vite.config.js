@@ -6,7 +6,7 @@ const isCodeSandbox = 'SANDBOX_URL' in process.env || 'CODESANDBOX_HOST' in proc
 export default defineConfig({
   plugins: [react()],
 
-  // publicDir: "./public/",
+  // publicDir: "../",
   base: './',
   server:
   {
@@ -18,7 +18,8 @@ export default defineConfig({
       outDir: '../dist',
       emptyOutDir: true,
       sourcemap: true
-  }
+  },
+
    
 })
 

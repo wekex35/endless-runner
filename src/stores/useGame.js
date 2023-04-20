@@ -1,10 +1,10 @@
-import create  from "zustand";
+import create from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 import React from "react";
 import { PATH_DEFAULT_COUNT } from "../common/constants";
 
 export default create(
-  subscribeWithSelector((set) => {
+  (set) => {
     return {
       pathCount: PATH_DEFAULT_COUNT,
       isPathAdded: true,
@@ -12,9 +12,12 @@ export default create(
        * Phases
        */
       phase: "ready",
+      //score
+      score: 0,
+      coins: 0,
       start: () => {
         set((state) => {
-          return state.phase == "ready"
+          return state.phase == "ready" || state.phase == "ended"
             ? {
                 phase: "playing",
               }
@@ -23,7 +26,7 @@ export default create(
       },
       restart: () => {
         set((state) => {
-          return state.phase == "playing" || state.phase == "ended"
+          return state.phase == "playing"
             ? {
                 phase: "ready",
               }
@@ -39,23 +42,40 @@ export default create(
             : {};
         });
       },
+      pause: () => {
+      
+        set((state) => {
+          return state.phase == "playing" 
+            ? {
+                phase: "pause",
+              }
+            : {};
+        });
+      },
+      resume: () => {
+        set((state) => {
+          return state.phase == "pause"
+            ? {
+                phase: "playing",
+              }
+            : {};
+        });
+      },
       addPath: () => {
-        console.log("addPat");
         set((state) => {
           return {
             pathCount: state.pathCount + 1,
-            isPathAdded: false
+            isPathAdded: false,
           };
         });
       },
       pathAdded: () => {
-        console.log("addPat");
         set((state) => {
           return {
-            isPathAdded: true
+            isPathAdded: true,
           };
         });
       },
     };
   })
-);
+;

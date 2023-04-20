@@ -1,7 +1,8 @@
 import { KeyboardControls } from "@react-three/drei";
-import Interface from "./Interface";
+
 import Game from "./Game";
 import { Canvas } from "@react-three/fiber";
+import Interface from "./components/interface/Interface";
 
 function App() {
   return (

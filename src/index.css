@@ -1,11 +1,213 @@
 html,
 body,
-#root
-{
+#root {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background: ivory;
+    font-family: 'Open Sans', sans-serif;
+    -webkit-user-select: none;
+    /* Safari */
+    -ms-user-select: none;
+    /* IE 10 and IE 11 */
+    user-select: none;
+    /* Standard syntax */
+}
+
+.interface {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* pointer-events: none; */
+}
+
+.score,
+.coins {
+    right: 0;
+    top: 10px;
+    position: absolute;
+    min-width: 120px;
+    color: #ffffff;
+    font-size: 30px;
+    background-color: #00000033;
+    text-align: center;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+
+    padding: 0 15px 0 10px;
+}
+
+.coins {
+    top: 55px;
+    min-width: 50px;
+}
+
+.coins:after {
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/d/d6/Gold_coin_icon.png');
+    background-size: 22px 22px;
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    margin-left: 7px;
+    content: "";
+}
+
+.pause {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    content: "";
+}
+
+.pause:active {
+    width: 75px;
+    height: 75px;
+}
+
+
+.resume {
+    display: flex;
+    justify-content: center;
+    margin-top: 30vh;
+    left: 0;
+    color: #ffffff;
+    width: 400px;
+    font-size: 80px;
+    background-color: #2080cf33;
+
+    pointer-events: auto;
+    margin-left: auto;
+    margin-right: auto;
+
+    border-radius: 20px;
+}
+
+.ended {
+
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: block;
+    height: 420px;
+    width: 320px;
+    background: #3636e69d;
+    position: absolute;
+    margin: auto;
+
+    border-style: groove;
+    border-width: 5px;
+    border-color: #32a1ce;
+
+}
+
+.ended>.score-board {
+    background-image: url('./images/score-board.png');
+    height: 420px;
+    width: 320px;
+    background-size: 315px 420px;
+    background-repeat: no-repeat;
+}
+
+.score-board>.score-title {
+    top: 65px;
+    left: 0;
+    right: 0;
+    position: absolute;
+    font-size: 50px;
+    width: 50%;
+    display: block;
+    margin: auto;
+    color: #4981a0d0;
+    font-weight: bold;
+}
+
+.score-board>.score-score {
+    top: 150px;
+    left: 0;
+    right: 0;
+    position: absolute;
+    font-size: 50px;
+    text-align: center;
+    display: block;
+    margin: auto;
+    color: #ffffffd0;
+    font-weight: bold;
+}
+
+.score-board>.score-coins {
+    top: 240px;
+    left: 0;
+    right: 0;
+    position: absolute;
+    font-size: 50px;
+    text-align: center;
+    display: block;
+    margin: auto;
+    color: #ffffffd0;
+    font-weight: bold;
+}
+
+.score-board>.score-coins:after {
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/d/d6/Gold_coin_icon.png');
+    background-size: 40px 40px;
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    margin-left: 7px;
+    content: "";
+}
+
+
+.score-board>.score-start {
+    background-image: url('./images/start-button.png');
+    top: 335px;
+    left: 8px;
+    right: 0;
+    position: absolute;
+    background-size: 205px 70px;
+    width: 205px;
+    height: 70px;
+    margin: auto;
+    content: "";
+}
+
+.score-board>.score-start:active {
+    width: 200px;
+    height: 65px;
+    background-size: 200px 65px;
+}
+
+.ready {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    text-align: center;
+
+
+}
+
+.ready>.text {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    background-color: #2080cfd9;
+    font-size: 50px;
+    border-radius: 20px;
+
+    width: 400px;
+    height: 70px;
+    margin: auto;
 }

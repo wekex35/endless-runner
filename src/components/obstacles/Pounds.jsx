@@ -5,19 +5,20 @@ import { useFrame } from "@react-three/fiber";
 import useGame from "../../stores/useGame";
 import { useRef } from "react";
 import { GetForwardTranslation, ObjectsPosition } from "../../common/utils";
+import { SPEED } from "../../common/constants";
 
 function Pounds(props) {
   const ref = useRef();
   const end = useGame((state) => state.end);
 
   useFrame((state, delta) => {
-    const speed = delta * 5;
+    const speed = delta * SPEED;
     const fT = GetForwardTranslation(ref, speed);
     ref.current.setTranslation(fT, true);
     ObjectsPosition[props.uuid] = fT;
 
     // if(ref.current.translation().z != fT.z){
-    //   console.log(props.pathName,props.uuid,fT);
+    //   //console.log(props.pathName,props.uuid,fT);
     // }
     if(ObjectsPosition[props.uuid]?.z > 10){
      delete ObjectsPosition[props.uuid]

@@ -10,7 +10,7 @@ export const RandomMinMax = (min, max) => {
 };
 
 export const ObstacleList = (start,end,name) => {
-  console.log({start,end,name});
+  // console.log({start,end,name});
   const obstacle = [Coins,Rocks,Pounds]
    const t = Array(3)
     .fill(0)
@@ -20,7 +20,7 @@ export const ObstacleList = (start,end,name) => {
       posZ: randInt(end,start),
       uuid: v4()
     }));
-    console.log('g',t);
+    // console.log('g',t);
     return t
 };
 

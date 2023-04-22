@@ -1,4 +1,4 @@
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import {
   BallCollider,
   CuboidCollider,
@@ -14,6 +14,7 @@ import {
   useGLTF,
   useKeyboardControls,
 } from "@react-three/drei";
+import { createUseGesture, dragAction, pinchAction, useDrag, useGesture } from '@use-gesture/react'
 import useGame from "../stores/useGame";
 import { useControls } from "leva";
 
@@ -24,6 +25,7 @@ function Player() {
   const [canJump, setJump] = useState(true);
   const phase = useGame((state) => state.phase);
   const end = useGame((state) => state.end);
+  const pause = useGame((state) => state.pause);
   const [subscribeKey, getKeys] = useKeyboardControls();
   const [getLeftRightArray, setLeftRightArray] = useState([]);
   const player = useRef();
@@ -49,6 +51,7 @@ function Player() {
   };
 
   const moveLeft = () => {
+    //console.log("jhjhjh");
     const { x, y, z } = player.current.translation();
     const toPosition = -(PATH_WIDTH - 1) / 3;
     let currentX = x;
@@ -169,7 +172,7 @@ function Player() {
     if (!player.current.translation) return;
     // if (phase === "playing") {
     playerController(delta);
-    // cameraMovement(state, delta);
+    cameraMovement(state, delta);
     // }
 
     const playerPosition = player.current.translation();
@@ -178,8 +181,70 @@ function Player() {
     }
   });
 
+
+
+
+
+  const swipeOccurredRef = useRef({
+    left: false,
+    right: false,
+    up: false,
+    down: false,
+  });
+  const { viewport } = useThree();
+  const bind = useGesture(
+    {
+      onDrag: ({ active, movement , direction, cancel }) => {
+       
+        // if (!swipeOccurredRef.current.left && x < -viewport.width / 2) {
+        //   moveLeft();
+        //   swipeOccurredRef.current.left = true;
+        // } else if (!swipeOccurredRef.current.right && x > viewport.width / 2) {
+        //   moveRight();
+        //   swipeOccurredRef.current.right = true;
+        // } else if (!swipeOccurredRef.current.up && y > viewport.height / 2) {
+        //   jump();
+        //   swipeOccurredRef.current.up = true;
+        // } else if (!swipeOccurredRef.current.down && y < -viewport.height / 2) {
+        //   // onSwipeDown();
+        //   swipeOccurredRef.current.down = true;
+        // }
+      },
+      onDragEnd: ({ active, movement , direction, cancel }) => {
+        const [mx,my] = movement
+
+ 
+        // if(!active) return
+        console.log({mx,my});
+        if(mx > 8){
+          console.log(mx,'+x called',my);
+         moveRight()
+        }else if(mx < -8){
+          console.log(mx,'-x called',my);
+          moveLeft()
+        } else if (my < 3) {
+
+          console.log(mx,'called',my);
+          jump()
+        }
+
+        // //console.log(end);
+        // swipeOccurredRef.current = {
+        //   left: false,
+        //   right: false,
+        //   up: false,
+        //   down: false,
+        // };
+      },
+    },
+    { target: window });
+  
+
+  // return <div {...bind(arg)} />
+
   return (
     <RigidBody
+    {...bind} 
       ref={(t) => {
         player.current = t;
       }}

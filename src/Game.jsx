@@ -32,12 +32,12 @@ export default function Game() {
       <Physics debug>
         <Perf position="bottom-left" />
         <Lights />
-        <OrbitControls />
+        {/* <OrbitControls /> */}
         <Path />
         <Player />
         {/* <Coins /> */}
    
-       <Handler/>
+       {/* <Handler/> */}
       </Physics>
     </>
   );

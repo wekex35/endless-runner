@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useMemo } from "react";
-import { PATH_LENGTH, PATH_SPAWN_OFFSET, PATH_THICKNESS, PATH_WIDTH } from "../common/constants";
+import { PATH_LENGTH, PATH_SPAWN_OFFSET, PATH_THICKNESS, PATH_WIDTH, SPEED } from "../common/constants";
 import { CuboidCollider, RigidBody, vec3 } from "@react-three/rapier";
 import useGame from "../stores/useGame";
 import { useFrame, useLoader } from "@react-three/fiber";
@@ -28,15 +28,19 @@ const DynamicPath = React.forwardRef(({ details, phase }, ref) => {
   // const objPositions = useGame((state) => state.objPositions);  
 
   const cP = ref.current?.translation();
-  const position =
+  let position =
     ref.current && (phase == "playing" || phase == "pause")
       ? [cP.x, cP.y, cP.z]
       : details.position;
+  if(phase == "ended"){
+    position = details.position;
+  }
+  //console.log(position);
 
   return (
     <group>
       {details.obstacles.map(({ side, Obstacle, posZ, uuid }) => {
-            // console.log({
+            // //console.log({
             //   name: details.name,
             //   'pathZ': cP?.z,
             //   'posZ' : posZ,
@@ -141,16 +145,16 @@ function Path() {
       const pathNo = refObject.userData.name.split("path")[1];
       const newArr = [...paths];
       const newZ = (-PATH_LENGTH / 2 - PATH_LENGTH) + PATH_SPAWN_OFFSET //- 3;
-      console.log('====',(-PATH_LENGTH / 2 - PATH_LENGTH));
+      //console.log('====',(-PATH_LENGTH / 2 - PATH_LENGTH));
       newArr[pathNo].obstacles = ObstacleList(newZ+PATH_LENGTH/2, (newZ - PATH_LENGTH)+PATH_LENGTH/2,'test');
       setPath(newArr);
       return vec3({ x: 0, y: 0, z: newZ });
     }
     return vec3({ x: 0, y: 0, z: curPosition + speed });
   };
-console.log(paths);
+//console.log(paths);
   useFrame((state, delta) => {
-    const speed = delta * 5;
+    const speed = delta * SPEED;
     if (phase === "playing") {
       addScore(1, state.clock.getElapsedTime());
       refPath1.current.setTranslation(getUpdatedPath(refPath1, speed), true);
@@ -186,7 +190,7 @@ console.log(paths);
       // pathAdded();
     }
   });
-
+//console.log(phase);
   return (
     <>
       {paths.map((path, i) => (

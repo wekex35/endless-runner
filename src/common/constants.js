@@ -12,3 +12,5 @@ export const PATH_SPAWN_OFFSET = 5
  */
 //Runner Scale 
 export const RS = 0.008;
+export const SPEED = 5;
+

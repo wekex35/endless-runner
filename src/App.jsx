@@ -3,8 +3,19 @@ import { KeyboardControls } from "@react-three/drei";
 import Game from "./Game";
 import { Canvas } from "@react-three/fiber";
 import Interface from "./components/interface/Interface";
+import useGame from "./stores/useGame";
+import { useEffect, useState } from "react";
 
 function App() {
+  const phase = useGame((state) => state.phase);
+  const [state, setState] = useState(true);
+  useEffect(() => {
+    console.log(phase);
+    if (phase == "ended") {
+      setState(false);
+      setInterval(() => { setState(true);}, 5000);
+    }
+  }, [phase]);
   return (
     <KeyboardControls
       map={[
@@ -24,7 +35,7 @@ function App() {
           position: [2.5, 4, 6],
         }}
       >
-        <Game />
+        {state ? <Game /> : <></>}
       </Canvas>
       <Interface />
     </KeyboardControls>

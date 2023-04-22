@@ -3,7 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import { RigidBody, quat, vec3 } from "@react-three/rapier";
 import React from "react";
 import { useRef } from "react";
-import { PATH_LENGTH } from "../../common/constants";
+import { PATH_LENGTH, SPEED } from "../../common/constants";
 import { v4 as uuidv4 } from "uuid";
 import { randInt } from "three/src/math/MathUtils";
 import {
@@ -17,7 +17,7 @@ const Coin = ({ coinModel, position = [0, 0, 0], ...props }) => {
   const coinRef = useRef();
   const addCoins = useGame((state) => state.addCoins);
   useFrame((state, delta) => {
-    const speed = delta * 5;
+    const speed = delta * SPEED;
     const fT = GetForwardTranslation(coinRef, speed);
     coinRef.current.setTranslation(fT, true);
 
@@ -29,7 +29,7 @@ const Coin = ({ coinModel, position = [0, 0, 0], ...props }) => {
     }
 
     // if(ref.current.translation().z != fT.z){
-    //   console.log(props.pathName,props.uuid,fT);
+    //   //console.log(props.pathName,props.uuid,fT);
     // }
   });
 

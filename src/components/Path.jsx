@@ -1,19 +1,19 @@
-import React, { useRef, useState } from "react";
-import { PATH_LENGTH, PATH_THICKNESS, PATH_WIDTH } from "../common/constants";
+import React, { useRef, useState, useEffect, useMemo } from "react";
+import { PATH_LENGTH, PATH_SPAWN_OFFSET, PATH_THICKNESS, PATH_WIDTH } from "../common/constants";
 import { CuboidCollider, RigidBody, vec3 } from "@react-three/rapier";
 import useGame from "../stores/useGame";
 import { useFrame, useLoader } from "@react-three/fiber";
-import { generateUUID } from "three/src/math/MathUtils";
-import { RandomMinMax } from "../common/utils";
-import { v4 as uuidv4 } from "uuid";
+import { generateUUID, randFloat } from "three/src/math/MathUtils";
+import { ObjectsPosition, ObstacleList, RandomMinMax } from "../common/utils";
+
 import { Clock, TextureLoader, Vector2, Vector3 } from "three";
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
-import { useEffect } from "react";
+import Rocks from "./obstacles/Rocks";
+import Coins from "./obstacles/Coins";
+import { v4 as uuidv4 } from "uuid";
 
-const DynamicPath = React.forwardRef(({ details }, ref) => {
-  console.log("===>", ref);
-
+const DynamicPath = React.forwardRef(({ details, phase }, ref) => {
   const [colorMap, displacementMap, normalMap, roughnessMap, aoMap] =
     useTexture([
       "../textures/stone_path/Stone_Path_008_basecolor.jpg",
@@ -25,33 +25,61 @@ const DynamicPath = React.forwardRef(({ details }, ref) => {
   colorMap.repeat = new THREE.Vector2(1, 10);
   colorMap.wrapS = THREE.RepeatWrapping;
   colorMap.wrapT = THREE.RepeatWrapping;
+  // const objPositions = useGame((state) => state.objPositions);  
 
   const cP = ref.current?.translation();
   const position =
-    ref.current //&& (details.phase == "ready" || details.phase == "ended")
+    ref.current && (phase == "playing" || phase == "pause")
       ? [cP.x, cP.y, cP.z]
       : details.position;
+
   return (
-    <RigidBody
-      type="fixed"
-      position={position}
-      ref={ref}
-      colliders={"cuboid"}
-      userData={{ name: details.name }}
-    >
-      <mesh name="path">
-        <boxGeometry args={details.scale} name="pathBox" />
-        <meshStandardMaterial
-          displacementScale={0}
-          factor={4}
-          map={colorMap}
-          displacementMap={displacementMap}
-          normalMap={normalMap}
-          roughnessMap={roughnessMap}
-          aoMap={aoMap}
+    <group>
+      {details.obstacles.map(({ side, Obstacle, posZ, uuid }) => {
+            // console.log({
+            //   name: details.name,
+            //   'pathZ': cP?.z,
+            //   'posZ' : posZ,
+            //   'uuid': uuid,
+            //   'last_update_position':  ObjectsPosition[uuid],
+            //   'update_position': ObjectsPosition[uuid]?.z  ||  posZ,
+            // })
+        return (
+      
+        <Obstacle
+          pathName={details.name}
+          key={uuid}
+          uuid={uuid}
+          color={details.color}
+          side={side}
+          position={[0, 0, ObjectsPosition[uuid]?.z  ||  posZ]}
         />
-      </mesh>
-      <mesh
+      )})}
+      {/* <Coins position={position} /> */}
+      {/* <Coins position={[0, 0, randFloat(position[2], position[2] - 40)]} /> */}
+      <RigidBody
+        type="fixed"
+        position={position}
+        ref={ref}
+        name={details.name}
+        colliders={"trimesh"}
+        userData={{ name: details.name }}
+      >
+        <mesh name="path">
+          <boxGeometry args={details.scale} name="pathBox" />
+          <meshStandardMaterial
+            displacementScale={0}
+            factor={4}
+            // color={details.color}
+            map={colorMap}
+            displacementMap={displacementMap}
+            normalMap={normalMap}
+            roughnessMap={roughnessMap}
+            aoMap={aoMap}
+          />
+        </mesh>
+
+        {/* <mesh
         castShadow={true}
         name="obstacle"
         scale={[PATH_WIDTH / 2, 2, 1]}
@@ -59,8 +87,9 @@ const DynamicPath = React.forwardRef(({ details }, ref) => {
       >
         <boxGeometry name="obstacleBox" />
         <meshStandardMaterial color={"red"} />
-      </mesh>
-    </RigidBody>
+      </mesh> */}
+      </RigidBody>
+    </group>
   );
 });
 
@@ -73,48 +102,63 @@ function Path() {
   const refPath1 = useRef();
   const refPath2 = useRef();
   const phase = useGame((state) => state.phase);
-  const addPath = useGame((state) => state.addPath);
+  const addScore = useGame((state) => state.addScore);
+  
 
+  const obs1 = useMemo(() => [], [])
+  const obs2 = useMemo(() => ObstacleList(
+    -PATH_LENGTH,
+    - PATH_LENGTH * 2,
+    "path1",
+  ), [])
+  const [first, setfirst] = useState(false)
   const [paths, setPath] = useState([
     {
       scale,
       position,
       ref: refPath1,
-      color: "skyblue",
-      name: "path1",
+      color: "black",
+      name: "path0",
+      obstacles: obs1,
     },
     {
       scale,
       position: [...position.slice(0, 2), position[2] - PATH_LENGTH],
       ref: refPath2,
       color: "greenyellow",
-      name: "path2",
+      name: "path1",
+      obstacles: obs2
     },
   ]);
 
-  useEffect(() => {
-    if (phase == "ready" || phase == "ended") {
-      refPath1.current = undefined;
-      refPath2.current = undefined;
-    }
-  }, [phase]);
+  useEffect(() => {}, []);
 
   const getUpdatedPath = (ref, speed) => {
     const refObject = ref.current;
     const curPosition = refObject.translation().z;
-    if (curPosition > PATH_LENGTH / 2) {
-      return vec3({ x: 0, y: 0, z: -PATH_LENGTH / 2 - PATH_LENGTH });
+    if (curPosition > (PATH_LENGTH / 2)+PATH_SPAWN_OFFSET  ) {
+      
+      const pathNo = refObject.userData.name.split("path")[1];
+      const newArr = [...paths];
+      const newZ = (-PATH_LENGTH / 2 - PATH_LENGTH) + PATH_SPAWN_OFFSET //- 3;
+      console.log('====',(-PATH_LENGTH / 2 - PATH_LENGTH));
+      newArr[pathNo].obstacles = ObstacleList(newZ+PATH_LENGTH/2, (newZ - PATH_LENGTH)+PATH_LENGTH/2,'test');
+      setPath(newArr);
+      return vec3({ x: 0, y: 0, z: newZ });
     }
     return vec3({ x: 0, y: 0, z: curPosition + speed });
   };
-
+console.log(paths);
   useFrame((state, delta) => {
     const speed = delta * 5;
-
-    // refPath2.current.position.z += speed;
     if (phase === "playing") {
+      addScore(1, state.clock.getElapsedTime());
       refPath1.current.setTranslation(getUpdatedPath(refPath1, speed), true);
       refPath2.current.setTranslation(getUpdatedPath(refPath2, speed), true);
+    } else {
+      // if (state.clock.running) {
+      //   state.clock.stop();
+      // }
     }
     if (pathCount > 0 && !isPathAdded) {
       // const [path1, path2] = paths;
@@ -153,6 +197,7 @@ function Path() {
           ref={path.ref}
         />
       ))}
+    
     </>
   );
 }

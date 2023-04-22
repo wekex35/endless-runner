@@ -4,7 +4,9 @@ const isCodeSandbox = 'SANDBOX_URL' in process.env || 'CODESANDBOX_HOST' in proc
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react({
+    include: "**/*.jsx",
+  })],
 
   // publicDir: "../",
   base: './',

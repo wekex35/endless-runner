@@ -15,33 +15,7 @@ export default function AdventurePack(props) {
     "./models/low_poly_adventure_asset_pack.glb"
   );
 
-  const { actions } = useAnimations(animations, group);
-  const options = [];
-  const options2 = {};
-  for (const node in nodes) {
-    const nd = node.toString();
 
-    if (nd.includes("#")) {
-      const matNo = nd.split("#")[1].split("_")[0];
-      const obj = {
-        geo: nd,
-        mat: `Material_${matNo}`,
-      };
-      options2[`${nd.split("#")[0].replace("_Material_", "")}`] = nd;
-      options.push(nd);
-    }
-  }
-
-  // const { name,scale } = useControls({
-  //   name: {
-  //     options: options,
-  //   },
-  //   scale : {
-  //     value : 0.05,
-  //     min : 0.01,
-  //     max : 0.1,
-  //   }
-  // });
  const name = props.name
   const mat = `Material_${name.split("#")[1].split("_")[0]}`;
   return (

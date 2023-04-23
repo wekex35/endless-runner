@@ -18,6 +18,7 @@ import { useFrame } from "@react-three/fiber";
 import Handler from "./components/Handler";
 import Ground from "./components/Ground";
 import House from "./components/House";
+import Ghost from "./components/Ghost";
 
 export default function Game() {
   const phase = useGame((state) => state.phase);
@@ -45,12 +46,14 @@ export default function Game() {
         <Sky/>
         <Perf position="bottom-left" />
         <Lights />
-        {/* <OrbitControls makeDefault/>  */}
-        <House/>
+        <OrbitControls makeDefault/> 
+       
        {state ? <>
+        <House/>
         <Path />
         <Player />
         <Ground/>
+        <Ghost/>
        </> :<></>}
       
 

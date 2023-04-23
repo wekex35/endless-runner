@@ -1,4 +1,4 @@
-import create from "zustand";
+import {create} from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 import React from "react";
 import { PATH_DEFAULT_COUNT } from "../common/constants";
@@ -22,6 +22,7 @@ export default create((set) => {
     },
     start: () => {
       set((state) => {
+        state.resetScore()
         return state.phase == "ready" || state.phase == "ended"
           ? {
               phase: "playing",
@@ -40,6 +41,7 @@ export default create((set) => {
     },
     end: () => {
       set((state) => {
+       
         return state.phase == "playing"
           ? {
               phase: "ended",

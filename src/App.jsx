@@ -1,13 +1,13 @@
-import { KeyboardControls } from "@react-three/drei";
+import { KeyboardControls, Loader } from "@react-three/drei";
 
 import Game from "./Game";
 import { Canvas } from "@react-three/fiber";
 import Interface from "./components/interface/Interface";
 import useGame from "./stores/useGame";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import ObjectTest from "./components/ObjectTest";
 
 function App() {
-  
   return (
     <KeyboardControls
       map={[
@@ -27,8 +27,12 @@ function App() {
           position: [2.5, 4, -6],
         }}
       >
-       <Game /> 
+       
+        <Suspense fallback={null}>
+          <Game />
+        </Suspense>
       </Canvas>
+      <Loader />
       <Interface />
     </KeyboardControls>
   );

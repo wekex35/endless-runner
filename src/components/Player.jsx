@@ -273,5 +273,5 @@ function Player() {
     </RigidBody>
   );
 }
-
+useFBX.preload("./models/run.fbx");
 export default Player;

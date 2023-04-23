@@ -82,3 +82,4 @@ export default function Coins(props) {
     </>
   );
 }
+useFBX.preload("./models/coin.fbx");

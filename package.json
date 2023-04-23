@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prod": "vite build && vite preview"
   },
   "dependencies": {
     "@react-three/drei": "^9.65.5",

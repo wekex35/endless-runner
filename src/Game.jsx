@@ -28,7 +28,9 @@ export default function Game() {
     console.log(phase);
     if (phase == "ended") {
       setState(false);
-      setInterval(() => { setState(true);}, 5000);
+      setInterval(() => {
+        setState(true);
+      }, 500);
     }
   }, [phase]);
   useFrame((state, delta) => {
@@ -41,23 +43,25 @@ export default function Game() {
 
   return (
     <>
-   
       <Physics debug={false}>
-        <Sky/>
+        <Sky />
         <Perf position="bottom-left" />
         <Lights />
-        <OrbitControls makeDefault/> 
+        <OrbitControls makeDefault />
        
-       {state ? <>
-        <House/>
-        <Path />
-        <Player />
-        <Ground/>
-        <Ghost/>
-       </> :<></>}
-      
+        {state ? (
+          <>
+            <House />
+            <Path />
+            <Player />
+            <Ground />
+            <Ghost />
+          </>
+        ) : (
+          <></>
+        )}
 
-       {/* <Handler/> */}
+        {/* <Handler/> */}
       </Physics>
     </>
   );

@@ -35,21 +35,12 @@ const DynamicPath = React.forwardRef(({ details, phase }, ref) => {
   if(phase == "ended"){
     position = details.position;
   }
-  //console.log(position);
+
 
   return (
     <group>
       {details.obstacles.map(({ side, Obstacle, posZ, uuid }) => {
-            // //console.log({
-            //   name: details.name,
-            //   'pathZ': cP?.z,
-            //   'posZ' : posZ,
-            //   'uuid': uuid,
-            //   'last_update_position':  ObjectsPosition[uuid],
-            //   'update_position': ObjectsPosition[uuid]?.z  ||  posZ,
-            // })
         return (
-      
         <Obstacle
           pathName={details.name}
           key={uuid}
@@ -129,7 +120,7 @@ function Path() {
       scale,
       position: [...position.slice(0, 2), position[2] - PATH_LENGTH],
       ref: refPath2,
-      color: "greenyellow",
+      color: "yellow",
       name: "path1",
       obstacles: obs2
     },

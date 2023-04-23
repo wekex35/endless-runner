@@ -8,7 +8,6 @@ title: Low Poly Adventure Asset Pack
 
 import React, { useRef } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
-import { useControls } from "leva";
 
 export default function AdventurePack(props) {
   const group = useRef();

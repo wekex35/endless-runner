@@ -6,6 +6,7 @@ import useGame from "../../stores/useGame";
 import { GetForwardTranslation, ObjectsPosition } from "../../common/utils";
 import { useEffect } from "react";
 import { SPEED } from "../../common/constants";
+import { HitSound2 } from "../../common/Audio";
 
 export default function Rocks(props) {
   const ref = useRef();
@@ -36,6 +37,8 @@ export default function Rocks(props) {
       scale={[1.5, 2, 1]} //1.1
       {...props}
       onCollisionEnter={(payload) => {
+        HitSound2.currentTime = 0
+        HitSound2.play()
         end();
       }}
     >

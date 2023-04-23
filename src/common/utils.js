@@ -9,18 +9,34 @@ export const RandomMinMax = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
+const obstacle = [Coins,Rocks,]//Pounds
+const RandomObstacles = (obs,index) =>{
+  
+  let generatedObjs = {indexObs: obstacle[index], index}
+  const found = obs.findIndex((value) => value.obstacleIndex == generatedObjs.index)
+  if(found != -1){
+    generatedObjs = RandomObstacles(obs,randInt(0, obstacle.length-1))
+  }
+  return generatedObjs
+}
 export const ObstacleList = (start,end,name) => {
   // console.log({start,end,name});
-  const obstacle = [Coins,Rocks,Pounds]
-   const t = Array(3)
-    .fill(0)
-    .map(() => ({
-      side: !!randInt(0, 1) ? -1 : 1,
-      Obstacle: obstacle[randInt(0, 2)],
-      posZ: randInt(end,start),
-      uuid: v4()
-    }));
-    // console.log('g',t);
+  
+  const t = []
+    for (let index = 0; index < obstacle.length ; index++) {
+      const indOps = RandomObstacles(t,randInt(0, obstacle.length-1))
+     
+      const obs = {
+        side: !!randInt(0, 1) ? -1 : 1,
+        Obstacle: indOps.indexObs, //obstacle[randInt(0, 2)],
+        obstacleIndex: indOps.index,
+        posZ: randInt(end,start),
+        uuid: v4()
+      }
+      t.push(obs)
+      
+    }
+   
     return t
 };
 

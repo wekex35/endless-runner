@@ -12,6 +12,7 @@ import {
   ObjectsPosition,
 } from "../../common/utils";
 import useGame from "../../stores/useGame";
+import { CoinSound } from "../../common/Audio";
 
 const Coin = ({ coinModel, position = [0, 0, 0], ...props }) => {
   const coinRef = useRef();
@@ -44,6 +45,8 @@ const Coin = ({ coinModel, position = [0, 0, 0], ...props }) => {
           GetDownwardTranslation(coinRef, { y: -2 }),
           true
         );
+        CoinSound.currentTime = 0
+        CoinSound.play()
         addCoins();
       }}
     >

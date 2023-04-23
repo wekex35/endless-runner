@@ -14,12 +14,17 @@ import {
   useGLTF,
   useKeyboardControls,
 } from "@react-three/drei";
-import { createUseGesture, dragAction, pinchAction, useDrag, useGesture } from '@use-gesture/react'
+import {
+  createUseGesture,
+  dragAction,
+  pinchAction,
+  useDrag,
+  useGesture,
+} from "@use-gesture/react";
 import useGame from "../stores/useGame";
-import { useControls } from "leva";
+import { Jump, JumpLand } from "../common/Audio";
 
 function Player() {
-
   const runModel = useFBX("./models/run.fbx");
   const [mixer] = useState(new THREE.AnimationMixer(runModel));
   const [canJump, setJump] = useState(true);
@@ -44,10 +49,13 @@ function Player() {
   }, [phase]);
 
   const jump = () => {
-
-    if(player.current.translation().y < 0.90){
-    const impulse = { x: 0, y: 3, z: 0 };
-    player.current.applyImpulse(impulse);}
+    setJump(false);
+    if (player.current.translation().y < 0.9) {
+      Jump.currentTime = 0;
+      Jump.play();
+      const impulse = { x: 0, y: 3, z: 0 };
+      player.current.applyImpulse(impulse);
+    }
   };
 
   const moveLeft = () => {
@@ -63,7 +71,7 @@ function Player() {
       currentY = currentX > 0 ? currentY + 0.1 : currentY - 0.1;
       position.x = currentX;
       // position.y = currentY < y ? y : currentY;
-      position.x = currentX < 1 ? -1: currentX;
+      position.x = currentX < 1 ? -1 : currentX;
       leftRightArray.push(position);
     }
     setLeftRightArray(leftRightArray);
@@ -79,11 +87,11 @@ function Player() {
       const position = vec3({ x, y, z });
       currentX += 0.3;
       currentY = currentX < 0 ? currentY + 0.1 : currentY - 0.1;
-      position.x = currentX > 1 ? 1: currentX;
+      position.x = currentX > 1 ? 1 : currentX;
       // position.y = currentY < y ? y : currentY;
       leftRightArray.push(position);
     }
-   
+
     setLeftRightArray(leftRightArray);
   };
 
@@ -123,7 +131,6 @@ function Player() {
         return state.jump || state.forward;
       },
       (value) => {
-      
         if (value) {
           jump();
         }
@@ -162,8 +169,8 @@ function Player() {
     cameraTarget.copy(playerPosition);
     cameraTarget.y += 0.25;
 
-    smoothCameraPosition.lerp(cameraPosition, 5 * delta);
-    smoothTargetPosition.lerp(cameraTarget, 5 * delta);
+    smoothCameraPosition.lerp(cameraPosition, 3 * delta);
+    smoothTargetPosition.lerp(cameraTarget, 3 * delta);
 
     state.camera.position.copy(smoothCameraPosition);
     state.camera.lookAt(smoothTargetPosition);
@@ -181,10 +188,6 @@ function Player() {
     }
   });
 
-
-
-
-
   const swipeOccurredRef = useRef({
     left: false,
     right: false,
@@ -194,8 +197,7 @@ function Player() {
   const { viewport } = useThree();
   const bind = useGesture(
     {
-      onDrag: ({ active, movement , direction, cancel }) => {
-       
+      onDrag: ({ active, movement, direction, cancel }) => {
         // if (!swipeOccurredRef.current.left && x < -viewport.width / 2) {
         //   moveLeft();
         //   swipeOccurredRef.current.left = true;
@@ -210,22 +212,17 @@ function Player() {
         //   swipeOccurredRef.current.down = true;
         // }
       },
-      onDragEnd: ({ active, movement , direction, cancel }) => {
-        const [mx,my] = movement
-
- 
+      onDragEnd: ({ active, movement, direction, cancel, tap }) => {
+        const [mx, my] = movement;
+        console.log({ tap });
         // if(!active) return
-        console.log({mx,my});
-        if(mx > 8){
-          console.log(mx,'+x called',my);
-         moveRight()
-        }else if(mx < -8){
-          console.log(mx,'-x called',my);
-          moveLeft()
-        } else if (my < 3) {
-
-          console.log(mx,'called',my);
-          jump()
+        console.log({ mx, my });
+        if (mx > 8) {
+          moveRight();
+        } else if (mx < -8) {
+          moveLeft();
+        } else if (my < -3) {
+          jump();
         }
 
         // //console.log(end);
@@ -237,31 +234,38 @@ function Player() {
         // };
       },
     },
-    { target: window });
-  
+    { target: window }
+  );
 
   // return <div {...bind(arg)} />
 
   return (
     <RigidBody
-    {...bind} 
+      {...bind}
       ref={(t) => {
         player.current = t;
       }}
       ccd={true}
-      position={[1, 2, -2]}
+      position={[1.2, 2.45, 4]}
       rotation-y={Math.PI}
       colliders={false}
       lockRotations={true}
       onCollisionEnter={(payload) => {
-
+        if (
+          !canJump &&
+          (payload.other.colliderObject.name === "pah1" ||
+            payload.other.colliderObject.name === "path0")
+        ) {
+          JumpLand.currentTime = 0;
+          JumpLand.play();
+          setJump(true);
+        }
         // if (payload.manifold.solverContactPoint(0).y > 0.5) {
         //   end();
         //   player.current = "";
         // }else{
-          setJump(true)
+        //
         // }
-        
       }}
     >
       <primitive object={runModel} scale={RS} position-y={-75 * RS} />

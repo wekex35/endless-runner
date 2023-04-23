@@ -96,18 +96,18 @@ body,
     display: block;
     height: 420px;
     width: 320px;
-    background: #3636e69d;
+    /* background: #3636e69d; */
     position: absolute;
     margin: auto;
 
-    border-style: groove;
+    /* border-style: groove;
     border-width: 5px;
-    border-color: #32a1ce;
+    border-color: #32a1ce; */
 
 }
 
 .ended>.score-board {
-    background-image: url('./images/score-board.png');
+    background-image: url('../public/images/score-board.png');
     height: 420px;
     width: 320px;
     background-size: 315px 420px;
@@ -165,7 +165,7 @@ body,
 
 
 .score-board>.score-start {
-    background-image: url('./images/start-button.png');
+    background-image: url('../public/images/start-button.png');
     top: 335px;
     left: 8px;
     right: 0;

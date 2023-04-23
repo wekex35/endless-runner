@@ -6,8 +6,10 @@ import useGame from "../../stores/useGame";
 import { useRef } from "react";
 import { GetForwardTranslation, ObjectsPosition } from "../../common/utils";
 import { SPEED } from "../../common/constants";
+import { HitSound } from "../../common/Audio";
 
 function Pounds(props) {
+  
   const ref = useRef();
   const end = useGame((state) => state.end);
 
@@ -34,6 +36,8 @@ function Pounds(props) {
       scale={1.1}
       {...props}
       onCollisionEnter={(payload) => {
+        HitSound.currentTime = 0
+        HitSound.play()
         end();
       }}
     >
@@ -41,13 +45,13 @@ function Pounds(props) {
         <AdventurePack
           name={AdventurePackObjects.Pond}
           scale={0.016}
-          position={[0, 0.23, 1]}
+          position={[0, 0.23, 0.8]}
         />
         <AdventurePack
           name={AdventurePackObjects.Pond_Rocks}
           scale={0.0125}
           rotation={[Math.PI * 0.3, -Math.PI * 0.1, 0]}
-          position={[1.1, 0.35, 0.8]}
+          position={[1.1, 0.35, 0.6]}
         />
         <AdventurePack
           name={AdventurePackObjects.Duck}
